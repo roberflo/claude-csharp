@@ -4,40 +4,335 @@ Configuraciones de produccion para Claude Code optimizadas para desarrollo con *
 
 ## Caracteristicas
 
-- **15 Agents** especializados para .NET y React
-- **25+ Skills** con patrones para ASP.NET Core, EF Core, React, Next.js
-- **15+ Commands** para workflows TDD, code review, arquitectura
+- **8 Agents** especializados para .NET y React
+- **10 Skills** con patrones para ASP.NET Core, EF Core, React, Next.js
+- **6 Commands** para workflows TDD, code review, arquitectura
 - **Hooks** para automatizacion de builds, tests, formatting
-- **Rules** con guias obligatorias para C# y TypeScript/React
+- **5 Rules** con guias obligatorias para C# y TypeScript/React
 - **MCP Configs** para Azure, SQL Server, y servicios cloud
+
+---
 
 ## Quick Start
 
-### Opcion 1: Plugin Installation
+### Opcion 1: Clonar e Instalar como Plugin
 
 ```bash
-# Copiar la carpeta .net a tu proyecto
-cp -r .net ~/.claude/
+# Clonar el repositorio
+git clone https://github.com/tu-usuario/claude-csharp.git
 
-# O agregar como plugin local
-/plugin install ./path/to/.net
+# Instalar como plugin de Claude Code
+cd claude-csharp
+claude /plugin install .
 ```
 
-### Opcion 2: Manual
+### Opcion 2: Copiar a ~/.claude/
 
 ```bash
-# Copiar agents
-cp .net/agents/*.md ~/.claude/agents/
+# Clonar el repositorio
+git clone https://github.com/tu-usuario/claude-csharp.git
+cd claude-csharp
 
-# Copiar rules (REQUERIDO)
-cp -r .net/rules/* ~/.claude/rules/
-
-# Copiar skills
-cp -r .net/skills/* ~/.claude/skills/
-
-# Copiar commands
-cp .net/commands/*.md ~/.claude/commands/
+# Copiar todo a tu configuracion de Claude
+cp -r agents/* ~/.claude/agents/
+cp -r commands/* ~/.claude/commands/
+cp -r skills/* ~/.claude/skills/
+cp -r rules/* ~/.claude/rules/
+cp hooks/hooks.json ~/.claude/hooks.json
 ```
+
+### Opcion 3: Por Componente (Selectivo)
+
+```bash
+# Solo agents
+cp agents/*.md ~/.claude/agents/
+
+# Solo commands
+cp commands/*.md ~/.claude/commands/
+
+# Solo rules (RECOMENDADO como minimo)
+cp rules/*.md ~/.claude/rules/
+```
+
+---
+
+## Herramientas de Claude Code (Tools)
+
+Claude Code tiene acceso a herramientas poderosas que puedes usar en tus conversaciones:
+
+### Herramientas de Archivos
+
+| Tool | Uso | Ejemplo |
+|------|-----|---------|
+| **Read** | Leer archivos | "Lee el archivo Program.cs" |
+| **Write** | Crear archivos nuevos | "Crea un nuevo archivo UserService.cs" |
+| **Edit** | Editar archivos existentes | "Cambia el nombre de la clase" |
+| **Glob** | Buscar archivos por patron | "Encuentra todos los *.cs" |
+| **Grep** | Buscar contenido en archivos | "Busca usos de IUserService" |
+
+### Herramientas de Ejecucion
+
+| Tool | Uso | Ejemplo |
+|------|-----|---------|
+| **Bash** | Ejecutar comandos terminal | "Ejecuta dotnet build" |
+| **Task** | Lanzar agentes especializados | "Usa el agente de arquitectura" |
+
+### Herramientas de Web
+
+| Tool | Uso | Ejemplo |
+|------|-----|---------|
+| **WebFetch** | Obtener contenido de URL | "Lee la documentacion de esta URL" |
+| **WebSearch** | Buscar en internet | "Busca como usar FluentValidation" |
+
+### Herramientas de Planificacion
+
+| Tool | Uso | Ejemplo |
+|------|-----|---------|
+| **EnterPlanMode** | Planificar antes de implementar | "Planifica esta feature" |
+| **TaskCreate/TaskUpdate** | Gestionar lista de tareas | "Crea tareas para este proyecto" |
+| **AskUserQuestion** | Preguntar al usuario | Cuando Claude necesita clarificacion |
+
+### Ejemplos de Uso de Tools
+
+```bash
+# Buscar todos los controladores
+"Encuentra todos los archivos que terminen en Controller.cs"
+
+# Ejecutar tests
+"Ejecuta dotnet test y muestrame los resultados"
+
+# Buscar implementaciones
+"Busca donde se usa la interfaz IRepository"
+
+# Crear estructura
+"Crea la estructura de carpetas para Clean Architecture"
+
+# Planificar feature
+"Entra en modo plan para disenar el sistema de autenticacion"
+```
+
+---
+
+## Comandos Slash Disponibles
+
+Los comandos se invocan con `/nombre-comando`:
+
+| Comando | Descripcion | Cuando Usar |
+|---------|-------------|-------------|
+| `/dotnet-plan` | Planificar feature backend | Antes de implementar nueva funcionalidad .NET |
+| `/dotnet-tdd` | Implementar con TDD | Desarrollo guiado por tests en C# |
+| `/dotnet-review` | Code review C# | Revisar calidad, seguridad, performance |
+| `/react-tdd` | Implementar con TDD React | Desarrollo guiado por tests en React |
+| `/react-review` | Code review React/Next.js | Revisar componentes, hooks, SSR |
+| `/fullstack-plan` | Planificar feature completa | Features que tocan backend Y frontend |
+
+### Uso de Comandos
+
+```bash
+# Planificar nueva feature
+/fullstack-plan "Sistema de notificaciones push"
+
+# Desarrollar con TDD
+/dotnet-tdd "Crear endpoint POST /api/users"
+
+# Revisar codigo
+/dotnet-review src/Services/UserService.cs
+```
+
+---
+
+## Agents Especializados
+
+Los agents son subprocesos especializados que Claude puede invocar:
+
+| Agent | Especialidad | Herramientas |
+|-------|--------------|--------------|
+| `dotnet-architect` | Arquitectura .NET, Clean Architecture, CQRS | Read, Grep, Glob |
+| `csharp-reviewer` | Code review C#, seguridad, performance | Read, Grep |
+| `aspnet-tdd-guide` | TDD para ASP.NET Core, xUnit, Moq | Read, Write, Bash |
+| `efcore-reviewer` | Entity Framework, queries, migrations | Read, Grep |
+| `react-architect` | Arquitectura React, estado, componentes | Read, Grep, Glob |
+| `react-tdd-guide` | TDD para React, Testing Library, Vitest | Read, Write, Bash |
+| `nextjs-reviewer` | Next.js, SSR, App Router, caching | Read, Grep |
+| `fullstack-planner` | Planificacion completa backend+frontend | Read, Glob, Grep |
+
+### Invocar Agents Manualmente
+
+```bash
+# Pedir arquitectura
+"Usa el agente dotnet-architect para disenar la estructura"
+
+# Pedir review
+"Invoca csharp-reviewer para revisar este codigo"
+
+# Planificar feature
+"Usa fullstack-planner para planificar el modulo de pagos"
+```
+
+---
+
+## Skills (Patrones y Conocimiento)
+
+Los skills proveen conocimiento especializado:
+
+### Backend (.NET)
+
+| Skill | Contenido |
+|-------|-----------|
+| `dotnet-patterns` | Clean Architecture, CQRS, Vertical Slice, DDD |
+| `efcore-patterns` | Repository, Unit of Work, Migrations, Performance |
+| `aspnet-testing` | xUnit, Moq, WebApplicationFactory, Integration Tests |
+| `aspnet-security` | JWT, Identity, CORS, Rate Limiting, OWASP |
+
+### Frontend (React/Next.js)
+
+| Skill | Contenido |
+|-------|-----------|
+| `react-patterns` | Custom Hooks, Context, Compound Components, HOCs |
+| `nextjs-patterns` | App Router, Server Components, Streaming, Caching |
+| `react-testing` | Testing Library, MSW, Vitest, Component Testing |
+
+### General
+
+| Skill | Contenido |
+|-------|-----------|
+| `tdd-workflow` | RED-GREEN-REFACTOR, Test First, Coverage |
+| `coding-standards` | Estilo de codigo, naming, organizacion |
+| `continuous-learning` | Mejora continua, documentacion |
+
+---
+
+## Rules (Reglas Obligatorias)
+
+Las rules se aplican automaticamente a todo el codigo:
+
+| Rule | Aplica A | Principales Puntos |
+|------|----------|-------------------|
+| `csharp-style` | *.cs | PascalCase, records, async/await, nullable |
+| `react-style` | *.tsx, *.ts | camelCase, hooks, functional components |
+| `security` | Todo | No secrets, validacion, sanitizacion |
+| `testing` | Tests | 80%+ coverage, TDD, assertions claras |
+| `git-workflow` | Commits | Conventional commits, branches, PRs |
+
+---
+
+## Hooks (Automatizaciones)
+
+Los hooks ejecutan acciones automaticas:
+
+### Pre-Tool Hooks
+- **Long-running processes**: Aviso al ejecutar `dotnet run` o `npm run dev`
+- **Force push warning**: Advertencia al usar `git push --force`
+
+### Post-Tool Hooks
+- **Build failure**: Recordatorio al fallar `dotnet build` o `npm run build`
+- **Test failure**: Recordatorio al fallar tests
+- **C# file written**: Recordatorio de compilar
+- **TS file written**: Recordatorio de type check
+- **Debug logs**: Advertencia al detectar console.log/Console.Write
+
+### Session Hooks
+- **SessionStart**: Muestra comandos disponibles
+- **Stop**: Recordatorio de ejecutar tests antes de commit
+
+---
+
+## Workflows Principales
+
+### 1. Nueva Feature Full-Stack
+
+```
+1. /fullstack-plan [descripcion]    # Planificar
+2. Claude entra en modo plan        # Disenar arquitectura
+3. /dotnet-tdd                      # Backend con TDD
+4. /react-tdd                       # Frontend con TDD
+5. /dotnet-review                   # Review backend
+6. /react-review                    # Review frontend
+7. git commit -m "feat: ..."        # Commit
+```
+
+### 2. Bug Fix con TDD
+
+```
+1. "Investiga el bug en..."         # Claude analiza
+2. /dotnet-tdd fix                  # Escribe test que falla
+3. Implementa el fix                # Test pasa
+4. /dotnet-review                   # Verifica el fix
+```
+
+### 3. Refactoring Seguro
+
+```
+1. /dotnet-review                   # Identifica code smells
+2. "Escribe tests para..."          # Coverage primero
+3. "Refactoriza..."                 # Con tests como red de seguridad
+4. "Ejecuta dotnet test"            # Verifica que todo pasa
+```
+
+### 4. Code Review Completo
+
+```
+1. /dotnet-review src/              # Review backend
+2. /react-review app/               # Review frontend
+3. "Resume los hallazgos"           # Obtener resumen
+```
+
+---
+
+## Estructura del Proyecto
+
+```
+claude-csharp/
+├── agents/                    # 8 Subagents especializados
+│   ├── dotnet-architect.md
+│   ├── csharp-reviewer.md
+│   ├── aspnet-tdd-guide.md
+│   ├── efcore-reviewer.md
+│   ├── react-architect.md
+│   ├── react-tdd-guide.md
+│   ├── nextjs-reviewer.md
+│   └── fullstack-planner.md
+│
+├── commands/                  # 6 Slash commands
+│   ├── dotnet-plan.md
+│   ├── dotnet-tdd.md
+│   ├── dotnet-review.md
+│   ├── react-tdd.md
+│   ├── react-review.md
+│   └── fullstack-plan.md
+│
+├── skills/                    # 10 Skills con patrones
+│   ├── dotnet-patterns/
+│   ├── efcore-patterns/
+│   ├── aspnet-testing/
+│   ├── aspnet-security/
+│   ├── react-patterns/
+│   ├── nextjs-patterns/
+│   ├── react-testing/
+│   ├── tdd-workflow/
+│   ├── coding-standards/
+│   └── continuous-learning/
+│
+├── rules/                     # 5 Reglas obligatorias
+│   ├── csharp-style.md
+│   ├── react-style.md
+│   ├── security.md
+│   ├── testing.md
+│   └── git-workflow.md
+│
+├── hooks/
+│   └── hooks.json            # Automatizaciones
+│
+├── mcp-configs/
+│   └── mcp-servers.json      # Azure, SQL Server
+│
+├── examples/
+│   └── CLAUDE.md             # Ejemplo de proyecto
+│
+└── scripts/                   # Scripts de utilidad
+```
+
+---
 
 ## Stack Soportado
 
@@ -58,120 +353,35 @@ cp .net/commands/*.md ~/.claude/commands/
 - React Query / TanStack Query
 - Testing Library + Vitest
 
-## Estructura
-
-```
-.net/
-├── agents/                    # Subagents especializados
-│   ├── dotnet-architect.md    # Arquitectura .NET
-│   ├── csharp-reviewer.md     # Code review C#
-│   ├── aspnet-tdd-guide.md    # TDD para ASP.NET
-│   ├── efcore-reviewer.md     # Review EF Core
-│   ├── react-architect.md     # Arquitectura React
-│   ├── nextjs-reviewer.md     # Review Next.js
-│   └── fullstack-planner.md   # Planificacion full-stack
-│
-├── skills/                    # Patrones y workflows
-│   ├── dotnet-patterns/       # Clean Architecture, CQRS
-│   ├── efcore-patterns/       # EF Core best practices
-│   ├── aspnet-testing/        # xUnit, integration tests
-│   ├── aspnet-security/       # JWT, Identity, CORS
-│   ├── react-patterns/        # Hooks, Context, Components
-│   ├── nextjs-patterns/       # SSR, App Router, API Routes
-│   ├── react-testing/         # Testing Library, Vitest
-│   └── tdd-workflow/          # RED-GREEN-REFACTOR
-│
-├── commands/                  # Slash commands
-│   ├── dotnet-plan.md         # /dotnet-plan
-│   ├── dotnet-tdd.md          # /dotnet-tdd
-│   ├── dotnet-review.md       # /dotnet-review
-│   ├── react-review.md        # /react-review
-│   └── fullstack-setup.md     # /fullstack-setup
-│
-├── hooks/                     # Automaciones
-│   └── hooks.json             # Pre/Post tool hooks
-│
-├── rules/                     # Guias obligatorias
-│   ├── csharp-style.md        # Estilo C#
-│   ├── aspnet-security.md     # Seguridad ASP.NET
-│   ├── react-style.md         # Estilo React/TS
-│   ├── testing.md             # Reglas de testing
-│   └── git-workflow.md        # Git conventions
-│
-├── mcp-configs/               # Configuraciones MCP
-│   └── mcp-servers.json       # Azure, SQL Server, etc.
-│
-└── examples/                  # Ejemplos
-    └── CLAUDE.md              # Ejemplo de proyecto
-```
-
-## Workflows Principales
-
-### 1. Nueva Feature Full-Stack
-
-```bash
-/fullstack-plan        # Planificar feature (backend + frontend)
-/dotnet-tdd           # Implementar backend con TDD
-/react-tdd            # Implementar frontend con TDD
-/dotnet-review        # Review del backend
-/react-review         # Review del frontend
-git commit            # Commit con conventional commits
-```
-
-### 2. Fix de Bug
-
-```bash
-/dotnet-tdd fix       # Escribir test que reproduce el bug
-                      # Implementar fix
-/dotnet-review        # Verificar el fix
-```
-
-### 3. Refactor
-
-```bash
-/dotnet-review        # Identificar code smells
-/dotnet-tdd refactor  # Refactorizar con tests
-```
-
-## Agents Disponibles
-
-| Agent | Descripcion | Uso |
-|-------|-------------|-----|
-| `dotnet-architect` | Diseno de arquitectura .NET | Decisiones de arquitectura, Clean Architecture |
-| `csharp-reviewer` | Code review de C# | Calidad, seguridad, performance |
-| `aspnet-tdd-guide` | TDD para ASP.NET Core | Escribir tests primero, 80%+ coverage |
-| `efcore-reviewer` | Review de Entity Framework | Queries, migrations, performance |
-| `react-architect` | Arquitectura React/Next.js | Estructura de componentes, estado |
-| `nextjs-reviewer` | Review Next.js especifico | SSR, caching, optimizaciones |
-| `fullstack-planner` | Planificacion completa | Features que tocan backend y frontend |
-
-## Skills Clave
-
-### Backend
-- **dotnet-patterns**: Clean Architecture, CQRS, Vertical Slice
-- **efcore-patterns**: Repository pattern, Unit of Work, Migrations
-- **aspnet-testing**: xUnit, Moq, WebApplicationFactory
-- **aspnet-security**: JWT, Identity, CORS, Rate Limiting
-
-### Frontend
-- **react-patterns**: Custom Hooks, Context, Compound Components
-- **nextjs-patterns**: App Router, Server Components, Caching
-- **react-testing**: Testing Library, MSW, Vitest
-
-## Rules Obligatorias
-
-1. **Immutability**: Records en C#, spread operator en TS
-2. **Testing**: 80%+ coverage, TDD workflow
-3. **Security**: No secrets en codigo, validacion de inputs
-4. **File Organization**: 200-400 lineas tipico, max 800
-5. **Naming**: PascalCase (C#), camelCase (TS)
+---
 
 ## Requisitos
 
 - Claude Code v2.1.0+
 - .NET 8 SDK
 - Node.js 18+
-- SQL Server / PostgreSQL
+- SQL Server / PostgreSQL (opcional)
+
+---
+
+## Tips de Uso
+
+1. **Siempre planifica primero** - Usa `/fullstack-plan` o modo plan antes de implementar features complejas
+
+2. **TDD es el default** - Escribe tests primero con `/dotnet-tdd` o `/react-tdd`
+
+3. **Reviews frecuentes** - Usa `/dotnet-review` y `/react-review` antes de commits
+
+4. **Usa las tools correctas**:
+   - `Read` para ver archivos (no `cat`)
+   - `Grep` para buscar (no `grep`)
+   - `Edit` para cambios (no `sed`)
+
+5. **Aprovecha los agents** - Deja que los agents especializados hagan el trabajo pesado
+
+6. **Confía en los hooks** - Te recordarán compilar, testear, y evitar errores comunes
+
+---
 
 ## Contribuir
 
