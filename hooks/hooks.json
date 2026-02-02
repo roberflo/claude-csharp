@@ -1,0 +1,98 @@
+{
+  "PreToolUse": [
+    {
+      "matcher": "tool == \"Bash\" && command matches \"dotnet run|npm run dev|npm start\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Hook] Reminder: Consider running in a separate terminal or using tmux for long-running processes'",
+          "description": "Remind about long-running processes"
+        }
+      ]
+    },
+    {
+      "matcher": "tool == \"Bash\" && command matches \"git push.*--force\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Hook] WARNING: Force push detected. Ensure this is intentional and not to main/master branch.'",
+          "description": "Warn about force push"
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "tool == \"Bash\" && command matches \"dotnet build|npm run build\" && exit_code != 0",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Hook] Build failed. Check error messages above and fix issues before continuing.'",
+          "description": "Build failure reminder"
+        }
+      ]
+    },
+    {
+      "matcher": "tool == \"Bash\" && command matches \"dotnet test|npm test\" && exit_code != 0",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Hook] Tests failed. Fix failing tests before continuing with TDD workflow.'",
+          "description": "Test failure reminder"
+        }
+      ]
+    },
+    {
+      "matcher": "tool == \"Write\" && path matches \"\\.cs$\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Hook] C# file written. Remember to run dotnet build to verify compilation.'",
+          "description": "Remind to build after C# changes"
+        }
+      ]
+    },
+    {
+      "matcher": "tool == \"Write\" && path matches \"\\.(tsx?|jsx?)$\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Hook] TypeScript/React file written. Consider running npm run typecheck.'",
+          "description": "Remind to typecheck after TS changes"
+        }
+      ]
+    },
+    {
+      "matcher": "tool == \"Edit\" && path matches \"\\.(cs|tsx?|jsx?)$\" && content matches \"console\\.(log|write)\"",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Hook] WARNING: console.log/Console.Write detected. Remove before committing.'",
+          "description": "Warn about debug logs"
+        }
+      ]
+    }
+  ],
+  "SessionStart": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Session Start] .NET 8 + React/Next.js project. Use /dotnet-plan, /dotnet-tdd, /react-tdd for workflows.'",
+          "description": "Session start reminder"
+        }
+      ]
+    }
+  ],
+  "Stop": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo '[Session End] Remember: Run tests before committing (dotnet test && npm test)'",
+          "description": "Session end reminder"
+        }
+      ]
+    }
+  ]
+}

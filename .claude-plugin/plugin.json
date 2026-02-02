@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "name": "dotnet-react-claude-config",
+  "description": "Configuraciones de Claude Code para proyectos .NET 8 + React/Next.js",
+  "agents": [
+    "./agents/dotnet-architect.md",
+    "./agents/csharp-reviewer.md",
+    "./agents/aspnet-tdd-guide.md",
+    "./agents/efcore-reviewer.md",
+    "./agents/react-architect.md",
+    "./agents/nextjs-reviewer.md",
+    "./agents/fullstack-planner.md",
+    "./agents/react-tdd-guide.md"
+  ],
+  "skills": [
+    "./skills/",
+    "./commands/"
+  ]
+}
